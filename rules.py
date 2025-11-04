@@ -15,17 +15,16 @@ possible_tiles = {
 # maybe make new func for item consequences? or just do if not state.tile_consequence: ... else: ...
 
 def win_checker():
-    if state.mushroom_count == state.max_mushroom_count:
-        state.run_game = False
-        state.win = True
-        return True
-    else:
-        return False
+    state.mushroom_count == state.max_mushroom_count
+    state.run_game = False
+    state.win = True
+
 
 def pick_up(larry_row, larry_column, tiles):
     if tiles[larry_row][larry_column] == 'x':
         state.axe_tiles.remove((larry_row, larry_column))
         state.item_holding = 'axe'
+        return True
 
 def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     '''indicates rules (e.g. can't move past trees, etc)

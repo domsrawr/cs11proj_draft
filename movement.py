@@ -37,8 +37,10 @@ def main_move(str_of_moves, tiles):
         tiles[larry_row][larry_column] = 'L'
         if state.tile_consequence:
             tile_consequence(tiles, individual_move)
-        if rules.win_checker():
+        rules.win_checker()
+        if not state.run_game:
             break
+
         
 
 def tile_consequence(tiles,move):
@@ -90,7 +92,8 @@ def update_larry(individual_move, tiles):
         state.reset()
         return True
     elif individual_move in 'Pp':
-        rules.pick_up(larry_row, larry_column, tiles)
+        if rules.pick_up(larry_row, larry_column, tiles):
+            tiles[larry_row][larry_column] = 'L'
     else:
         tiles[larry_row][larry_column] = 'L'
         return False
