@@ -15,9 +15,9 @@ possible_tiles = {
 # maybe make new func for item consequences? or just do if not state.tile_consequence: ... else: ...
 
 def win_checker():
-    state.mushroom_count == state.max_mushroom_count
-    state.run_game = False
-    state.win = True
+    if state.mushroom_count == state.max_mushroom_count:
+        state.run_game = False
+        state.win = True
 
 
 def pick_up(larry_row, larry_column, tiles):
