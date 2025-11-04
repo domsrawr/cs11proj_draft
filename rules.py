@@ -8,31 +8,65 @@ possible_tiles = {
     'mushroom': '+',
     'rock': 'R',
     'water': '~',
-    'paved': '_'
+    'paved': '_',
+    'axe': 'x'
 }
+
+# maybe make new func for item consequences? or just do if not state.tile_consequence: ... else: ...
+
+def win_checker():
+    if state.mushroom_count == state.max_mushroom_count:
+        state.run_game = False
+        state.win = True
+
+def pick_up():
+    ...
 
 def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     '''indicates rules (e.g. can't move past trees, etc)
     '''
-    if tiles[larry_next_row][larry_next_column] == possible_tiles['tree']:
+    tile = tiles[larry_next_row][larry_next_column]
+
+    if tile == possible_tiles['water']:
+        state.tile_consequence = 'water_fall'
+        state.run_game = False
+        state.lose = True
+        return True
+
+    elif tile == possible_tiles['tree']:
         return False
-    if tiles[larry_next_row][larry_next_column] == possible_tiles['mushroom']:
+    
+    elif tile == possible_tiles['mushroom']:
         state.mushroom_count += 1
         return True
-    if tiles[larry_next_row][larry_next_column] == possible_tiles['rock']:
-        if tiles[larry_next_row + direction[0]][larry_next_column + direction[1]] in (possible_tiles['rock'], possible_tiles['tree'], possible_tiles['mushroom']):
-            return False
-        elif tiles[larry_next_row + direction[0]][larry_next_column + direction[1]] == possible_tiles['water']:
-            state.tile_consequence.append('rock_water')
-            return True
-        else:
-            state.tile_consequence.append('rock_forward')
-            return True
-    if tiles[larry_next_row][larry_next_column] == possible_tiles['water']:
-        state.alive = False
-        return False
-    if tiles[larry_next_row][larry_next_column] == possible_tiles['paved']:
-        state.tile_consequence.append('paved_step')
+    
+    elif tile == possible_tiles['axe']:
+        state.tile_consequence = 'axe_tile'
         return True
+    
+    elif tile == possible_tiles['paved']:
+        return True
+    
+    elif tile == possible_tiles['rock']:
+        next_row = larry_next_row + direction[0]
+        next_column = larry_next_column + direction[1]
+        next_tile = tiles[next_row][next_column]
+
+        if next_tile in (
+            possible_tiles['rock'], 
+            possible_tiles['tree'], 
+            possible_tiles['mushroom'],
+            possible_tiles['axe']):
+            return False
+        
+        elif next_tile == possible_tiles['water']:
+            state.tile_consequence = 'rock_water'
+            return True
+        
+        else:
+            state.tile_consequence = 'rock_forward'
+            return True
+        
     else:
         return True
+    

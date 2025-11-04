@@ -1,3 +1,5 @@
+import copy
+
 def get_grid(file):
     '''combines all functions to simplify process
     '''
@@ -8,10 +10,13 @@ def extract_grid_from_file(unformatted_stagefile):
     gets number of rows, columns
     gets forest tiles and formats them
     '''
+    global grid_copy
     separated_by_line = (list(unformatted_stagefile.split('\n')))
     rows, columns = separated_by_line[0].split(' ')
     given_grid = separated_by_line[1:]
-    return list(list(row) for row in given_grid)
+    grid_copy = list(list(row) for row in given_grid)
+    grid = copy.deepcopy(grid_copy)
+    return grid
 
 def read_file(filename):
     '''gets raw content of stagefile txt

@@ -4,22 +4,40 @@ import stagefile_reader
 import movement
 import display
 import state
+import rules
 
 
 filename = sys.argv[1] #sets stagefile as 'filename' variable
 tiles = stagefile_reader.get_grid(filename) #get forest tiles from stagefile
-movement.larry_finder(tiles) 
+movement.larry_finder(tiles)
+state.mushroom_counter(tiles)
 # calls larry.finder function so that meron na larry_row & larry_column sa movement.py (kasi global variable sha dun)
 # larry_row and larry_column are not defined here sa main.py
 
-while state.alive:
-    os.system('cls')
-    display.convert_to_str(tiles)
-    display.display_mushroom_count()
-    display.display_movement_instructions()
-    str_of_moves = input() 
-    movement.main_move(str_of_moves, tiles)
-else:
-    os.system('cls')
-    print('you dead')
+
+while True:
+    while state.run_game:
+        os.system('cls')
+        display.convert_to_str(tiles)
+        display.display_mushroom_count()
+        display.display_movement_instructions()
+        print(movement.axe_tiles)
+        print(movement.paved_tiles)
+        str_of_moves = input() 
+        movement.main_move(str_of_moves, tiles)
+    else:
+        if state.win:
+            os.system('cls')
+            display.convert_to_str(tiles)
+            display.win_mushroom_count()
+            display.win()
+            str_of_moves = input() 
+            movement.dead_or_win(str_of_moves, tiles)
+        elif state.lose:
+            os.system('cls')
+            display.convert_to_str(tiles)
+            display.lose()
+            str_of_moves = input() 
+            movement.dead_or_win(str_of_moves, tiles)
+
 

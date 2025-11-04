@@ -1,5 +1,7 @@
 import rules
 import state
+import stagefile_reader
+import copy
 
 movement_dict = {
     'W': (-1, 0),
@@ -13,6 +15,7 @@ movement_dict = {
 }
 
 paved_tiles = []
+axe_tiles = []
 
 def larry_finder(tiles):
     '''finds larry's coordinates by searching for 'L' in forest tiles
@@ -30,32 +33,42 @@ def main_move(str_of_moves, tiles):
     dito rin nauupdate yung tiles at nalalagay yung 'L'
     '''
     for individual_move in str_of_moves:
-        if (larry_row, larry_column) not in paved_tiles:
-            remove_trail(tiles)
-        else:
-            tiles[larry_row][larry_column] = '_'
+        trail(tiles)
         if not update_larry(individual_move, tiles):
             break
-        if state.tile_consequence:
-            consequence = state.tile_consequence[-1]
-            if consequence == 'rock_forward':
-                x,y = movement_dict[individual_move]
-                tiles[larry_row+x][larry_column+y] = 'R'
-            if consequence == 'rock_water':
-                x,y = movement_dict[individual_move]
-                tiles[larry_row+x][larry_column+y] = '_'
-                paved_tiles.append((larry_row+x, larry_column+y))
-            state.tile_consequence.clear()
         tiles[larry_row][larry_column] = 'L'
+        if state.tile_consequence:
+            tile_consequence(tiles, individual_move)
+        rules.win_checker()
+        
 
-def remove_trail(tiles):
-    '''when larry moves to a new tile, his previous tile becomes empty tile
-    '''
+def tile_consequence(tiles,move):
+    # idea: dict with consequence as key and tile as val
     global larry_row, larry_column
-    tiles[larry_row][larry_column] = '.'
+    dx,dy = movement_dict[move]
+    larry_next_row = larry_row + dx
+    larry_next_column = larry_column + dy
+    if state.tile_consequence == 'rock_forward':
+        tiles[larry_next_row][larry_next_column] = 'R'
+    if state.tile_consequence == 'rock_water':
+        tiles[larry_next_row][larry_next_column] = '_'
+        paved_tiles.append((larry_next_row, larry_next_column))
+    if state.tile_consequence == 'water_fall':
+        tiles[larry_row][larry_column] = '~'
+    if state.tile_consequence == 'axe_tile':
+        if (larry_row, larry_column) not in axe_tiles:
+            axe_tiles.append((larry_row, larry_column))
+    state.tile_consequence = ''
+
+def trail(tiles):
+    global larry_row, larry_column
+    if (larry_row, larry_column) not in paved_tiles and (larry_row, larry_column) not in axe_tiles:
+        tiles[larry_row][larry_column] = '.'
+    elif (larry_row, larry_column) in axe_tiles:
+        tiles[larry_row][larry_column] = 'x'
+    else:
+        tiles[larry_row][larry_column] = '_'
     
-
-
 def update_larry(individual_move, tiles):
     '''updates larry's coordinates using larry_row and larry_column variables
     also returns boolean value
@@ -64,23 +77,30 @@ def update_larry(individual_move, tiles):
     ^^^ nakalagay kasi sa project core na ganun so ganun
     '''
     global larry_row, larry_column
-    if individual_move in 'Ww' and rules.movement_rules(larry_row-1,larry_column,tiles,(-1,0)):
-        larry_row -= 1
+
+    if individual_move in movement_dict:
+        dx, dy = movement_dict[individual_move]
+        if rules.movement_rules(larry_row + dx, larry_column + dy, tiles, movement_dict[individual_move]):
+            larry_row += dx; larry_column += dy
+            return True
+        else:
+            pass; return True
+    elif individual_move == '!':
+        tiles[:] = copy.deepcopy(stagefile_reader.grid_copy)
+        larry_finder(tiles)
+        state.reset()
         return True
-    if individual_move in 'Ss' and rules.movement_rules(larry_row+1,larry_column,tiles,(1,0)):
-        larry_row += 1
-        return True
-    if individual_move in 'Aa' and rules.movement_rules(larry_row,larry_column-1,tiles,(0,-1)):
-        larry_column -= 1
-        return True
-    if individual_move in 'Dd' and rules.movement_rules(larry_row,larry_column+1,tiles,(0,+1)):
-        larry_column += 1
-        return True
-    elif individual_move in 'WASDwasd':
-        pass
-        return True
+    elif individual_move in 'Pp':
+        ...
+        # finish this
     else:
         tiles[larry_row][larry_column] = 'L'
         return False
     
-
+def dead_or_win(str_of_moves, tiles):
+    for i in range(len(str_of_moves)):
+        if str_of_moves[i] == '!':
+            main_move(str_of_moves[i:], tiles)
+            break
+        else:
+            pass
