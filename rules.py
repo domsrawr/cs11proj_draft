@@ -29,7 +29,7 @@ def pick_up(larry_row, larry_column, tiles):
 def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     '''indicates rules (e.g. can't move past trees, etc)
     '''
-    if (0 > larry_next_row > len(tiles)-1) or (0 > larry_next_column > len(tiles[0])-1):
+    if not (0 <= larry_next_row < len(tiles)) or not (0 <= larry_next_column < len(tiles[0])):
         return False
 
     tile = tiles[larry_next_row][larry_next_column]
