@@ -6,14 +6,12 @@ import display
 import state
 import rules
 
-
 filename = sys.argv[1] #sets stagefile as 'filename' variable
 tiles = stagefile_reader.get_grid(filename) #get forest tiles from stagefile
 movement.larry_finder(tiles)
 state.mushroom_counter(tiles)
 # calls larry.finder function so that meron na larry_row & larry_column sa movement.py (kasi global variable sha dun)
 # larry_row and larry_column are not defined here sa main.py
-
 
 while True:
     while state.run_game:
