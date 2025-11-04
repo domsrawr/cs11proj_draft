@@ -18,13 +18,21 @@ def win_checker():
     if state.mushroom_count == state.max_mushroom_count:
         state.run_game = False
         state.win = True
+        return True
+    else:
+        return False
 
-def pick_up():
-    ...
+def pick_up(larry_row, larry_column, tiles):
+    if tiles[larry_row][larry_column] == 'x':
+        state.axe_tiles.remove((larry_row, larry_column))
+        state.item_holding = 'axe'
 
 def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     '''indicates rules (e.g. can't move past trees, etc)
     '''
+    if (0 > larry_next_row > len(tiles)-1) or (0 > larry_next_column > len(tiles[0])-1):
+        return False
+
     tile = tiles[larry_next_row][larry_next_column]
 
     if tile == possible_tiles['water']:
@@ -34,6 +42,9 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
         return True
 
     elif tile == possible_tiles['tree']:
+        if state.item_holding == 'axe':
+            state.item_holding = None
+            return True
         return False
     
     elif tile == possible_tiles['mushroom']:

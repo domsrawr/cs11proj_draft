@@ -17,6 +17,12 @@ def display_movement_instructions():
 def display_mushroom_count():
     print(f'\n{state.mushroom_count} mushroom collected!')
 
+def display_item_holding():
+    if state.item_holding:
+        print(f'You are holding a {state.item_holding}')
+    else:
+        print(f'You are not holding anything.')
+
 def win_mushroom_count():
     print(f"\nYou've collected {state.mushroom_count} mushrooms!")
 
@@ -42,3 +48,4 @@ def lose():
  \_/\___/ \__,_| |_|\___/|___/\___(_|_|_)
                                          
           ''')
+    

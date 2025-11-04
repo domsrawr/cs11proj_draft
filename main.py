@@ -20,9 +20,10 @@ while True:
         os.system('cls')
         display.convert_to_str(tiles)
         display.display_mushroom_count()
+        display.display_item_holding()
         display.display_movement_instructions()
-        print(movement.axe_tiles)
-        print(movement.paved_tiles)
+        print(state.axe_tiles)
+        print(state.item_holding)
         str_of_moves = input() 
         movement.main_move(str_of_moves, tiles)
     else:

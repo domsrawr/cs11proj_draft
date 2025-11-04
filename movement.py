@@ -14,8 +14,6 @@ movement_dict = {
     'd': (0, 1),
 }
 
-paved_tiles = []
-axe_tiles = []
 
 def larry_finder(tiles):
     '''finds larry's coordinates by searching for 'L' in forest tiles
@@ -39,7 +37,8 @@ def main_move(str_of_moves, tiles):
         tiles[larry_row][larry_column] = 'L'
         if state.tile_consequence:
             tile_consequence(tiles, individual_move)
-        rules.win_checker()
+        if rules.win_checker():
+            break
         
 
 def tile_consequence(tiles,move):
@@ -52,19 +51,19 @@ def tile_consequence(tiles,move):
         tiles[larry_next_row][larry_next_column] = 'R'
     if state.tile_consequence == 'rock_water':
         tiles[larry_next_row][larry_next_column] = '_'
-        paved_tiles.append((larry_next_row, larry_next_column))
+        state.paved_tiles.append((larry_next_row, larry_next_column))
     if state.tile_consequence == 'water_fall':
         tiles[larry_row][larry_column] = '~'
     if state.tile_consequence == 'axe_tile':
-        if (larry_row, larry_column) not in axe_tiles:
-            axe_tiles.append((larry_row, larry_column))
+        if (larry_row, larry_column) not in state.axe_tiles:
+            state.axe_tiles.append((larry_row, larry_column))
     state.tile_consequence = ''
 
 def trail(tiles):
     global larry_row, larry_column
-    if (larry_row, larry_column) not in paved_tiles and (larry_row, larry_column) not in axe_tiles:
+    if (larry_row, larry_column) not in state.paved_tiles and (larry_row, larry_column) not in state.axe_tiles:
         tiles[larry_row][larry_column] = '.'
-    elif (larry_row, larry_column) in axe_tiles:
+    elif (larry_row, larry_column) in state.axe_tiles:
         tiles[larry_row][larry_column] = 'x'
     else:
         tiles[larry_row][larry_column] = '_'
@@ -91,8 +90,7 @@ def update_larry(individual_move, tiles):
         state.reset()
         return True
     elif individual_move in 'Pp':
-        ...
-        # finish this
+        rules.pick_up(larry_row, larry_column, tiles)
     else:
         tiles[larry_row][larry_column] = 'L'
         return False
