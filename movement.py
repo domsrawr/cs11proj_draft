@@ -15,8 +15,9 @@ movement_dict = {
 }
 
 def larry_finder(tiles):
-    '''finds larry's coordinates by searching for 'L' in forest tiles
-    '''
+    """
+    finds larry's coordinates by searching for 'L' in forest tiles
+    """
     global larry_row, larry_column
     for row_number in range(len(tiles)):
         if 'L' in tiles[row_number]:
@@ -26,9 +27,10 @@ def larry_finder(tiles):
                     larry_column = column_number
                 
 def main_move(str_of_moves, tiles):
-    '''combines all movement functions for simplification
+    """
+    combines all movement functions for simplification
     dito rin nauupdate yung tiles at nalalagay yung 'L'
-    '''
+    """
     for individual_move in str_of_moves:
         trail(tiles)
         if not update_larry(individual_move, tiles):
@@ -70,12 +72,13 @@ def trail(tiles):
         tiles[larry_row][larry_column] = '_'
     
 def update_larry(individual_move, tiles):
-    '''updates larry's coordinates using larry_row and larry_column variables
+    """
+    updates larry's coordinates using larry_row and larry_column variables
     also returns boolean value
     if True; for loop continues
     if False (e.g. did not input WASD); terminates for loop, all succeeding moves are not registered
     ^^^ nakalagay kasi sa project core na ganun so ganun
-    '''
+    """
     global larry_row, larry_column
 
     if individual_move in movement_dict:
