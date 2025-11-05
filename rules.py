@@ -21,10 +21,11 @@ def win_checker():
 
 
 def pick_up(larry_row, larry_column, tiles):
-    if tiles[larry_row][larry_column] == 'x':
+    if state.item_holding:
+        pass
+    elif tiles[larry_row][larry_column] == 'x':
         state.axe_tiles.remove((larry_row, larry_column))
         state.item_holding = 'axe'
-        return True
 
 def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     '''indicates rules (e.g. can't move past trees, etc)
@@ -33,6 +34,8 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
         return False
 
     tile = tiles[larry_next_row][larry_next_column]
+
+    is_there_item_in_tile(tile)
 
     if tile == possible_tiles['water']:
         state.tile_consequence = 'water_fall'
@@ -52,6 +55,7 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     
     elif tile == possible_tiles['axe']:
         state.tile_consequence = 'axe_tile'
+        state.tile_item = 'axe'
         return True
     
     elif tile == possible_tiles['paved']:
@@ -79,4 +83,12 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
         
     else:
         return True
+    
+def is_there_item_in_tile(tile):
+    if tile in (
+        possible_tiles['axe']
+    ):
+        pass
+    else:
+        state.tile_item = None
     

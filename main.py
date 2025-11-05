@@ -22,6 +22,7 @@ while True:
         display.display_mushroom_count()
         display.display_item_holding()
         display.display_movement_instructions()
+        display.tile_item()
         print(state.axe_tiles)
         print(state.item_holding)
         str_of_moves = input() 

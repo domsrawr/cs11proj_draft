@@ -12,8 +12,15 @@ def display_movement_instructions():
     [A] to move left
     [S] to move down
     [D] to move right
+    [P] to pick up an item
     [!] to reset the stage
     ''')
+
+def tile_item():
+    if state.tile_item:
+        print(f'The tile contains an {state.tile_item}!')
+    else:
+        print(f'There is no item at the tile.')
     
 def display_mushroom_count():
     print(f'\n{state.mushroom_count} mushroom collected!')

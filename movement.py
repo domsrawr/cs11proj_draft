@@ -14,7 +14,6 @@ movement_dict = {
     'd': (0, 1),
 }
 
-
 def larry_finder(tiles):
     '''finds larry's coordinates by searching for 'L' in forest tiles
     '''
@@ -92,8 +91,12 @@ def update_larry(individual_move, tiles):
         state.reset()
         return True
     elif individual_move in 'Pp':
-        if rules.pick_up(larry_row, larry_column, tiles):
-            tiles[larry_row][larry_column] = 'L'
+        if state.tile_item:
+            if not state.item_holding:
+                state.tile_item = None
+        rules.pick_up(larry_row, larry_column, tiles)
+        tiles[larry_row][larry_column] = 'L'
+        
     else:
         tiles[larry_row][larry_column] = 'L'
         return False
