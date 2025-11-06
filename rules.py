@@ -9,7 +9,8 @@ possible_tiles = {
     'rock': 'R',
     'water': '~',
     'paved': '_',
-    'axe': 'x'
+    'axe': 'x',
+    'flamethrower': 'f',
 }
 
 # maybe make new func for item consequences? or just do if not state.tile_consequence: ... else: ...
@@ -51,6 +52,11 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
     
     elif tile == possible_tiles['mushroom']:
         state.mushroom_count += 1
+        return True
+
+    elif tile == possible_tiles['flamethrower']:
+        state.tile_consequence = 'flamethrower_tile'
+        state.tile_item = 'flamethrower'
         return True
     
     elif tile == possible_tiles['axe']:
