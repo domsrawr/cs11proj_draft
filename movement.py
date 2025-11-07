@@ -46,7 +46,7 @@ def within_bounds(row, column, tiles):
 
 def tile_interactions(next_row, next_column, gamestate, tiles, row_offset, column_offset):
     '''general function for tile interactions. passes to helper functions if complicated interaction
-    returns boolean value. True if valid move or larry doesn't move, False otherwise
+    returns boolean value. True if valid move or larry does move, False otherwise
     '''
     next_tile = tiles[next_row][next_column]
     if next_tile == tile_symbols['empty']:
