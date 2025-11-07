@@ -1,42 +1,69 @@
 import os
-import sys
 import stagefile_reader
 import movement
 import display
 import state
-import rules
+import copy
+from argparse import ArgumentParser
 
-# sets stagefile as 'filename' variable
-filename = sys.argv[1]
-# get forest tiles from stagefile
-tiles = stagefile_reader.get_grid(filename)
+# add more documentation! more structured documentation
 
-# calls larry.finder function so that meron na larry_row & larry_column sa movement.py (kasi global variable sha dun)
-# larry_row and larry_column are not defined here sa main.py\
-movement.larry_finder(tiles)
-state.mushroom_counter(tiles)
+def main():
+    parser = ArgumentParser()
+    parser.add_argument('stage_file')
+    args = parser.parse_args()
 
-while True:
-    while state.run_game:
-        os.system('cls' if os.name == 'nt' else 'clear')
-        display.convert_to_str(tiles)
-        display.display_mushroom_count()
-        display.display_item_holding()
-        display.display_movement_instructions()
-        display.tile_item()
-        str_of_moves = input() 
-        movement.main_move(str_of_moves, tiles)
-    else:
-        if state.win:
-            os.system('cls' if os.name == 'nt' else 'clear')
+    tiles = stagefile_reader.get_grid(args.stage_file)
+    original_tiles = copy.deepcopy(tiles)
+    gamestate = state.initialize_gamestate(tiles)
+
+    while True:
+        while gamestate['run_game']:
+            clear()
             display.convert_to_str(tiles)
-            display.win_mushroom_count()
-            display.win()
-            str_of_moves = input() 
-            movement.dead_or_win(str_of_moves, tiles)
-        elif state.lose:
-            os.system('cls' if os.name == 'nt' else 'clear')
-            display.convert_to_str(tiles)
-            display.lose()
-            str_of_moves = input() 
-            movement.dead_or_win(str_of_moves, tiles)
+            display.display_mushroom_count(gamestate)
+            display.display_item_holding(gamestate)
+            display.display_movement_instructions()
+            display.tile_item(gamestate)
+            input_sequence = input() 
+            process_inputs(input_sequence, gamestate, tiles, original_tiles)
+        else:
+            if gamestate['win']:
+                clear()
+                display.convert_to_str(tiles)
+                display.win_mushroom_count(gamestate)
+                display.win()
+                input_sequence = input()
+                game_over_input(gamestate, tiles, original_tiles)
+            elif gamestate['lost']:
+                clear()
+                display.convert_to_str(tiles)
+                display.lose()
+                game_over_input(gamestate, tiles, original_tiles)
+
+def game_over_input(gamestate, tiles, original_tiles):
+    input_sequence = input()
+    for i in range(len(input_sequence)):
+        if input_sequence[i] == '!':
+            tiles[:] = copy.deepcopy(original_tiles)
+            state.reset(gamestate, tiles)
+            process_inputs(input_sequence[i:], gamestate, tiles, original_tiles)
+
+def process_inputs(input_sequence, gamestate, tiles, original_tiles):
+    for move in input_sequence:
+        if move.upper() in 'WASD':
+            movement.do_move(move.upper(), gamestate, tiles)
+        elif move.upper() == 'P':
+            movement.pick_up(gamestate)
+        elif move == '!':
+            tiles[:] = copy.deepcopy(original_tiles)
+            state.reset(gamestate, tiles)
+        else:
+            break
+        if not gamestate['run_game']:
+            break
+
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
+main()
