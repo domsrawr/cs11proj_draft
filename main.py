@@ -18,29 +18,25 @@ state.mushroom_counter(tiles)
 
 while True:
     while state.run_game:
-        os.system('cls')
+        os.system('cls' if os.name == 'nt' else 'clear')
         display.convert_to_str(tiles)
         display.display_mushroom_count()
         display.display_item_holding()
         display.display_movement_instructions()
         display.tile_item()
-        print(state.axe_tiles)
-        print(state.item_holding)
         str_of_moves = input() 
         movement.main_move(str_of_moves, tiles)
     else:
         if state.win:
-            os.system('cls')
+            os.system('cls' if os.name == 'nt' else 'clear')
             display.convert_to_str(tiles)
             display.win_mushroom_count()
             display.win()
             str_of_moves = input() 
             movement.dead_or_win(str_of_moves, tiles)
         elif state.lose:
-            os.system('cls')
+            os.system('cls' if os.name == 'nt' else 'clear')
             display.convert_to_str(tiles)
             display.lose()
             str_of_moves = input() 
             movement.dead_or_win(str_of_moves, tiles)
-
-

@@ -38,12 +38,10 @@ def main_move(str_of_moves, tiles):
         tiles[larry_row][larry_column] = 'L'
         if state.tile_consequence:
             tile_consequence(tiles, individual_move)
-        rules.win_checker()
         if not state.run_game:
             break
 
         
-
 def tile_consequence(tiles,move):
     # idea: dict with consequence as key and tile as val
     global larry_row, larry_column
@@ -52,24 +50,29 @@ def tile_consequence(tiles,move):
     larry_next_column = larry_column + dy
     if state.tile_consequence == 'rock_forward':
         tiles[larry_next_row][larry_next_column] = 'R'
-    if state.tile_consequence == 'rock_water':
+    elif state.tile_consequence == 'rock_water':
         tiles[larry_next_row][larry_next_column] = '_'
-        state.paved_tiles.append((larry_next_row, larry_next_column))
-    if state.tile_consequence == 'water_fall':
+        state.paved_tiles.add((larry_next_row, larry_next_column))
+    elif state.tile_consequence == 'water_fall':
         tiles[larry_row][larry_column] = '~'
-    if state.tile_consequence == 'axe_tile':
-        if (larry_row, larry_column) not in state.axe_tiles:
-            state.axe_tiles.append((larry_row, larry_column))
+    elif state.tile_consequence == 'axe_tile':
+        state.axe_tiles.add((larry_row, larry_column))
+    elif state.tile_consequence == 'flamethrower_tile':
+        state.flamethrower_tiles.add((larry_row, larry_column))
     state.tile_consequence = ''
 
 def trail(tiles):
+    ''' item tiles and paved tiles first because they're fewer in number
+    '''
     global larry_row, larry_column
-    if (larry_row, larry_column) not in state.paved_tiles and (larry_row, larry_column) not in state.axe_tiles:
-        tiles[larry_row][larry_column] = '.'
+    if (larry_row, larry_column) in state.paved_tiles:
+        tiles[larry_row][larry_column] = '_'
     elif (larry_row, larry_column) in state.axe_tiles:
         tiles[larry_row][larry_column] = 'x'
+    elif (larry_row, larry_column) in state.flamethrower_tiles:
+        tiles[larry_row][larry_column] = '*'
     else:
-        tiles[larry_row][larry_column] = '_'
+        tiles[larry_row][larry_column] = '.'
     
 def update_larry(individual_move, tiles):
     """
@@ -97,7 +100,7 @@ def update_larry(individual_move, tiles):
         if state.tile_item:
             if not state.item_holding:
                 state.tile_item = None
-        rules.pick_up(larry_row, larry_column, tiles)
+                rules.pick_up(larry_row, larry_column, tiles)
         tiles[larry_row][larry_column] = 'L'
         
     else:
@@ -109,5 +112,3 @@ def dead_or_win(str_of_moves, tiles):
         if str_of_moves[i] == '!':
             main_move(str_of_moves[i:], tiles)
             break
-        else:
-            pass

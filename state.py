@@ -7,21 +7,24 @@ max_mushroom_count = 0
 tile_consequence = ''
 item_holding = None
 tile_item = None
-paved_tiles = []
-axe_tiles = []
+paved_tiles = set()
+axe_tiles = set()
+flamethrower_tiles = set()
 
 def reset():
-    global run_game, win, lose, mushroom_count, tile_consequence, tile_item, item_holding, paved_tiles, axe_tiles
+    global run_game, win, lose, mushroom_count, tile_item, item_holding, paved_tiles, axe_tiles, flamethrower_tiles
     run_game = True
     win = False
     lose = False
     mushroom_count = 0
     tile_item = None
-    tile_consequence = ''
     item_holding = None
-    paved_tiles = []
-    axe_tiles = []
+    paved_tiles = set()
+    axe_tiles = set()
+    flamethrower_tiles = set()
 
+
+#smth about this
 def mushroom_counter(tiles):
     global max_mushroom_count
     for row_number in range(len(tiles)):
