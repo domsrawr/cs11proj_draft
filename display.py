@@ -1,8 +1,5 @@
-import state
-
 def convert_to_str(tiles):
-    """
-    converts forest tiles to string as tiles is initially formatted as list
+    """converts forest tiles to string as tiles is initially formatted as list
     """
     print('\n'.join(list(''.join(row) for row in tiles)))
 
@@ -16,23 +13,23 @@ def display_movement_instructions():
     [!] to reset the stage
     ''')
 
-def tile_item():
-    if state.tile_item:
-        print(f'The tile contains an {state.tile_item}!')
+def tile_item(gamestate):
+    if gamestate['tile_item']:
+        print(f'The tile contains an {gamestate['tile_item']}!')
     else:
         print(f'There is no item at the tile.')
     
-def display_mushroom_count():
-    print(f'\n{state.mushroom_count} mushroom collected!')
+def display_mushroom_count(gamestate):
+    print(f'\n{gamestate['mushroom_count']} mushroom collected!')
 
-def display_item_holding():
-    if state.item_holding:
-        print(f'You are holding a {state.item_holding}')
+def display_item_holding(gamestate):
+    if gamestate['item_holding']:
+        print(f'You are holding a {gamestate['item_holding']}')
     else:
         print(f'You are not holding anything.')
 
-def win_mushroom_count():
-    print(f"\nYou've collected {state.mushroom_count} mushrooms!")
+def win_mushroom_count(gamestate):
+    print(f"\nYou've collected {gamestate['mushroom_count']} mushrooms!")
 
 def win():
     print('''
