@@ -1,114 +1,176 @@
-import rules
-import state
-import stagefile_reader
-import copy
-
 movement_dict = {
     'W': (-1, 0),
     'S': (1, 0),
     'A': (0, -1),
     'D': (0, 1),
-    'w': (-1, 0),
-    's': (1, 0),
-    'a': (0, -1),
-    'd': (0, 1),
 }
 
-def larry_finder(tiles):
-    """
-    finds larry's coordinates by searching for 'L' in forest tiles
-    """
-    global larry_row, larry_column
-    for row_number in range(len(tiles)):
-        if 'L' in tiles[row_number]:
-            for column_number in range(len(tiles[row_number])):
-                if tiles[row_number][column_number] == 'L':
-                    larry_row = row_number
-                    larry_column = column_number
+tile_symbols = {
+    'tree': 'T',
+    'empty': '.',
+    'larry': 'L',
+    'mushroom': '+',
+    'rock': 'R',
+    'water': '~',
+    'paved': '_',
+    'axe': 'x',
+    'flamethrower': '*'
+}
                 
-def main_move(str_of_moves, tiles):
-    """
-    combines all movement functions for simplification
-    dito rin nauupdate yung tiles at nalalagay yung 'L'
-    """
-    for individual_move in str_of_moves:
-        trail(tiles)
-        if not update_larry(individual_move, tiles):
-            break
-        tiles[larry_row][larry_column] = 'L'
-        if state.tile_consequence:
-            tile_consequence(tiles, individual_move)
-        if not state.run_game:
-            break
+def do_move(direction, gamestate, tiles):
+    row_offset, column_offset = movement_dict[direction]
+    next_row = gamestate['larry_row'] + row_offset
+    next_column = gamestate['larry_column'] + column_offset
+    if within_bounds(next_row, next_column, tiles):
+        can_move = tile_interactions(next_row, next_column, gamestate, tiles, row_offset, column_offset)
+        if can_move:
+            check_tile_item(next_row, next_column, gamestate, tiles)
+            trail(gamestate['larry_row'], gamestate['larry_column'], gamestate, tiles)
+            gamestate['larry_row'] = next_row
+            gamestate['larry_column'] = next_column
+            if should_overwrite_tile(gamestate):
+                tiles[gamestate['larry_row']][gamestate['larry_column']] = tile_symbols['larry']
+            
 
-        
-def tile_consequence(tiles,move):
-    # idea: dict with consequence as key and tile as val
-    global larry_row, larry_column
-    dx,dy = movement_dict[move]
-    larry_next_row = larry_row + dx
-    larry_next_column = larry_column + dy
-    if state.tile_consequence == 'rock_forward':
-        tiles[larry_next_row][larry_next_column] = 'R'
-    elif state.tile_consequence == 'rock_water':
-        tiles[larry_next_row][larry_next_column] = '_'
-        state.paved_tiles.add((larry_next_row, larry_next_column))
-    elif state.tile_consequence == 'water_fall':
-        tiles[larry_row][larry_column] = '~'
-    elif state.tile_consequence == 'axe_tile':
-        state.axe_tiles.add((larry_row, larry_column))
-    elif state.tile_consequence == 'flamethrower_tile':
-        state.flamethrower_tiles.add((larry_row, larry_column))
-    state.tile_consequence = ''
+def should_overwrite_tile(gamestate):
+    '''for readability purposes
+    only time where larry doesn't overwrite the tile is when he drowns
+    (the water consumes him)
+    '''
+    return not gamestate['lost']
 
-def trail(tiles):
+def within_bounds(row, column, tiles):
+    '''checks if row and column fall under forest tile dimensions
+    '''
+    return 0 <= row < len(tiles) and 0 <= column < len(tiles[0])        
+
+def tile_interactions(next_row, next_column, gamestate, tiles, row_offset, column_offset):
+    '''general function for tile interactions. passes to helper functions if complicated interaction
+    returns boolean value. True if valid move or larry doesn't move, False otherwise
+    '''
+    next_tile = tiles[next_row][next_column]
+    if next_tile == tile_symbols['empty']:
+        return True
+    elif next_tile == tile_symbols['tree']:
+        return tree_interactions(next_row, next_column, gamestate, tiles)
+    elif next_tile == tile_symbols['rock']:
+        return rock_interactions(next_row, next_column, gamestate, tiles, row_offset, column_offset)
+    elif next_tile == tile_symbols['mushroom']:
+        return mushroom_interactions(gamestate)
+    elif next_tile == tile_symbols['paved']:
+        return True
+    elif next_tile == tile_symbols['water']:
+        gamestate['run_game'] = False
+        gamestate['lost'] = True
+        return True
+    elif next_tile == tile_symbols['axe']:
+        return True
+    elif next_tile == tile_symbols['flamethrower']:
+        return True
+    
+def check_tile_item(next_row, next_column, gamestate, tiles):
+    '''checks if there's an item in larry's next tile, None if no item
+    only runs when can_move is True because tile_item can only changes if larry actually moves to next tile
+    if can_move is False, larry still on same tile, so same tile_item
+    '''
+    next_tile = tiles[next_row][next_column]
+    item_map = {
+        'x': 'axe',
+        '*': 'flamethrower',
+    }
+    gamestate['tile_item'] = item_map.get(next_tile)
+
+def tree_interactions(next_row, next_column, gamestate, tiles):
+    '''if no item to cut/burn down tree, returns false
+    '''
+    if not gamestate['item_holding']:
+        return False
+    elif gamestate['item_holding'] == 'axe':
+        gamestate['item_holding'] = None
+        return True
+    elif gamestate['item_holding'] == 'flamethrower':
+        burn_connected_trees(next_row, next_column, tiles)
+        gamestate['item_holding'] = None
+        return True
+    
+def rock_interactions(rock_row, rock_column, gamestate, tiles, row_offset, column_offset):
+    '''handles all cases for rock interactions and pushing.
+    if rock's next position after being pushed is out of bounds, then invalid move
+    '''
+    rock_next_row = rock_row + row_offset
+    rock_next_column = rock_column + column_offset
+
+    if not within_bounds(rock_next_row, rock_next_column, tiles):
+        return False
+    
+    rock_next_tile = tiles[rock_next_row][rock_next_column]
+    
+    if rock_next_tile in {
+        tile_symbols['tree'],
+        tile_symbols['rock'],
+        tile_symbols['mushroom'],
+        tile_symbols['axe'],
+        tile_symbols['flamethrower']
+    }:
+        return False
+    
+    elif rock_next_tile == tile_symbols['water']:
+        tiles[rock_next_row][rock_next_column] = tile_symbols['paved']
+        gamestate['paved_tiles'].add((rock_next_row, rock_next_column))
+        return True
+    
+    else:
+        tiles[rock_next_row][rock_next_column] = tile_symbols['rock']
+        return True
+    
+def mushroom_interactions(gamestate):
+    '''adds 1 to mushroom collected. if all are collected, player wins
+    always returns True as all moves to mushrooms are valid
+    '''
+    gamestate['mushroom_count'] += 1
+    if gamestate['mushroom_count'] == gamestate['max_mushroom_count']:
+        gamestate['run_game'] = False
+        gamestate['win'] = True
+    return True
+
+def trail(larry_row, larry_column, gamestate, tiles):
     ''' item tiles and paved tiles first because they're fewer in number
     '''
-    global larry_row, larry_column
-    if (larry_row, larry_column) in state.paved_tiles:
+    if (larry_row, larry_column) in gamestate['paved_tiles']:
         tiles[larry_row][larry_column] = '_'
-    elif (larry_row, larry_column) in state.axe_tiles:
+    elif (larry_row, larry_column) in gamestate['axe_tiles']:
         tiles[larry_row][larry_column] = 'x'
-    elif (larry_row, larry_column) in state.flamethrower_tiles:
+    elif (larry_row, larry_column) in gamestate['flamethrower_tiles']:
         tiles[larry_row][larry_column] = '*'
     else:
         tiles[larry_row][larry_column] = '.'
     
-def update_larry(individual_move, tiles):
-    """
-    updates larry's coordinates using larry_row and larry_column variables
-    also returns boolean value
-    if True; for loop continues
-    if False (e.g. did not input WASD); terminates for loop, all succeeding moves are not registered
-    ^^^ nakalagay kasi sa project core na ganun so ganun
-    """
-    global larry_row, larry_column
+def pick_up(gamestate):
+    '''if there's an item in the tile, larry picks it up
+    '''
+    if gamestate['tile_item']:
+        gamestate['item_holding'] = gamestate['tile_item']
+        gamestate['tile_item'] = None
+        gamestate[f"{gamestate['item_holding']}_tiles"].remove((gamestate['larry_row'], gamestate['larry_column']))
 
-    if individual_move in movement_dict:
-        dx, dy = movement_dict[individual_move]
-        if rules.movement_rules(larry_row + dx, larry_column + dy, tiles, movement_dict[individual_move]):
-            larry_row += dx; larry_column += dy
-            return True
-        else:
-            pass; return True
-    elif individual_move == '!':
-        tiles[:] = copy.deepcopy(stagefile_reader.grid_copy)
-        larry_finder(tiles)
-        state.reset()
-        return True
-    elif individual_move in 'Pp':
-        if state.tile_item:
-            if not state.item_holding:
-                state.tile_item = None
-                rules.pick_up(larry_row, larry_column, tiles)
-        tiles[larry_row][larry_column] = 'L'
-        
-    else:
-        tiles[larry_row][larry_column] = 'L'
-        return False
-    
-def dead_or_win(str_of_moves, tiles):
-    for i in range(len(str_of_moves)):
-        if str_of_moves[i] == '!':
-            main_move(str_of_moves[i:], tiles)
-            break
+def burn_connected_trees(origin_row, origin_column, tiles):
+    '''for flame thrower
+    gets all connected trees then "burns" them down (replace with empty tile)
+    '''
+    r = len(tiles); c = len(tiles[0])
+    directions = [(0,1),(1,0),(0,-1),(-1,0)]
+    trees_affected = set()
+    def helper(tree_row, tree_column):
+        if (tree_row, tree_column) in trees_affected:
+            return
+        elif not (0 <= tree_row < r) or not (0 <= tree_column < c):
+            return
+        elif tiles[tree_row][tree_column] == tile_symbols['tree']:
+            trees_affected.add((tree_row, tree_column))
+            for (row_offset, column_offset) in directions:
+                helper(tree_row + row_offset, tree_column + column_offset)
+    helper(origin_row, origin_column)
+    for (tree_row, tree_column) in trees_affected:
+        tiles[tree_row][tree_column] = tile_symbols['empty']
+
+
