@@ -10,11 +10,7 @@ possible_tiles = {
     'water': '~',
     'paved': '_',
     'axe': 'x',
-<<<<<<< HEAD
     'flamethrower': '*'
-=======
-    'flamethrower': 'f',
->>>>>>> d1962a83548b60b00adf3926d4eeb75cf294c908
 }
 
 # maybe make new func for item consequences? or just do if not state.tile_consequence: ... else: ...
@@ -65,33 +61,12 @@ def movement_rules(larry_next_row, larry_next_column, tiles, direction):
         elif state.item_holding == 'axe':
             state.item_holding = None
             return True
-<<<<<<< HEAD
         elif state.item_holding == 'flamethrower':
             state.item_holding = None
             affected_tiles = flamethrower_affected(larry_next_row, larry_next_column, tiles)
             for (row,column) in affected_tiles:
                 tiles[row][column] = '.'
             return True
-=======
-        return False
-    
-    elif tile == possible_tiles['mushroom']:
-        state.mushroom_count += 1
-        return True
-
-    elif tile == possible_tiles['flamethrower']:
-        state.tile_consequence = 'flamethrower_tile'
-        state.tile_item = 'flamethrower'
-        return True
-    
-    elif tile == possible_tiles['axe']:
-        state.tile_consequence = 'axe_tile'
-        state.tile_item = 'axe'
-        return True
-    
-    elif tile == possible_tiles['paved']:
-        return True
->>>>>>> d1962a83548b60b00adf3926d4eeb75cf294c908
     
     elif tile == possible_tiles['rock']:
         next_row = larry_next_row + direction[0]
