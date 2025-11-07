@@ -1,32 +1,20 @@
-import copy
-
 def get_grid(file):
-    """
-    combines all functions to simplify process
+    """combines all functions to simplify process
     """
     return extract_grid_from_file(read_file(file))
 
 def extract_grid_from_file(unformatted_stagefile):
-    """
-    formats raw content taken from read_file()
-    gets number of rows, columns
+    """formats raw content taken from read_file()
     gets forest tiles and formats them
     """
-    global grid_copy
     separated_by_line = (list(unformatted_stagefile.split('\n')))
-    rows, columns = separated_by_line[0].split(' ')
     given_grid = separated_by_line[1:]
-    grid_copy = list(list(row) for row in given_grid)
-    grid = copy.deepcopy(grid_copy)
+    grid = list(list(row) for row in given_grid)
     return grid
 
 def read_file(filename):
-    """
-    gets raw content of stagefile txt
-    """
     try:
-        with open(filename, 'r') as file:
-            content = file.read()
-            return content
+        with open(filename, 'r', encoding='utf-8') as file:
+            return file.read()
     except FileNotFoundError:
-        print('error, no file given')
+        raise FileNotFoundError(f"File '{filename}' not found.")
