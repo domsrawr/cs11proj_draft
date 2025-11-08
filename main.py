@@ -51,8 +51,10 @@ def process_inputs(input_sequence, gamestate, tiles, original_tiles):
         move = input_sequence[i]
         if not gamestate['run_game']:
             if move == '!':
+                reset_game(gamestate, tiles, original_tiles)
                 game_over_input(input_sequence[i:], gamestate, tiles, original_tiles)
                 break
+            continue
         if move.upper() in 'WASD':
             movement.do_move(move.upper(), gamestate, tiles)
         elif move.upper() == 'P':
