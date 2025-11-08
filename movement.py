@@ -71,7 +71,7 @@ def tile_interactions(next_row, next_column, gamestate, tiles, row_offset, colum
 def check_tile_item(next_row, next_column, gamestate, tiles):
     '''checks if there's an item in larry's next tile, None if no item
     only runs when can_move is True because tile_item can only changes if larry actually moves to next tile
-    if can_move is False, larry still on same tile, so same tile_item
+    if can_move is False, larry still on same tile, so same tile_item, no need to check
     '''
     next_tile = tiles[next_row][next_column]
     item_map = {

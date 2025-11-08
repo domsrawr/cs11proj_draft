@@ -6,8 +6,6 @@ import state
 import copy
 from argparse import ArgumentParser
 
-# add more documentation! more structured documentation
-
 def main():
     parser = ArgumentParser()
     parser.add_argument('stage_file')
@@ -34,34 +32,39 @@ def main():
                 display.win_mushroom_count(gamestate)
                 display.win()
                 input_sequence = input()
-                game_over_input(gamestate, tiles, original_tiles)
+                game_over_input(input_sequence, gamestate, tiles, original_tiles)
             elif gamestate['lost']:
                 clear()
                 display.convert_to_str(tiles)
                 display.lose()
-                game_over_input(gamestate, tiles, original_tiles)
+                input_sequence = input()
+                game_over_input(input_sequence, gamestate, tiles, original_tiles)
 
-def game_over_input(gamestate, tiles, original_tiles):
-    input_sequence = input()
+def game_over_input(input_sequence, gamestate, tiles, original_tiles):
     for i in range(len(input_sequence)):
         if input_sequence[i] == '!':
-            tiles[:] = copy.deepcopy(original_tiles)
-            state.reset(gamestate, tiles)
+            reset_game(gamestate, tiles, original_tiles)
             process_inputs(input_sequence[i:], gamestate, tiles, original_tiles)
 
 def process_inputs(input_sequence, gamestate, tiles, original_tiles):
-    for move in input_sequence:
+    for i in range(len(input_sequence)):
+        move = input_sequence[i]
+        if not gamestate['run_game']:
+            if move == '!':
+                game_over_input(input_sequence[i:], gamestate, tiles, original_tiles)
+                break
         if move.upper() in 'WASD':
             movement.do_move(move.upper(), gamestate, tiles)
         elif move.upper() == 'P':
             movement.pick_up(gamestate)
         elif move == '!':
-            tiles[:] = copy.deepcopy(original_tiles)
-            state.reset(gamestate, tiles)
+            reset_game(gamestate, tiles, original_tiles)
         else:
             break
-        if not gamestate['run_game']:
-            break
+        
+def reset_game(gamestate, tiles, original_tiles):
+    tiles[:] = copy.deepcopy(original_tiles)
+    state.reset(gamestate, tiles)
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
