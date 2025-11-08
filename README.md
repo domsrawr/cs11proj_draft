@@ -13,7 +13,7 @@
 **11/8/2025 3:33 PM**
 - Fixed logic when won/lost
 - "WWWD!AAA" where larry dies on D; 
-before: '!AAA' does not register
-after: '!AAA' registers
+- - before: '!AAA' does not register
+- - after: '!AAA' registers
 - added reset_game() function on main.py to simply gamestate and tile resetting
 
