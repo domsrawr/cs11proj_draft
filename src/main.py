@@ -11,6 +11,8 @@ def main():
     parser.add_argument('stage_file')
     args = parser.parse_args()
 
+    print(args)
+
     tiles = stagefile_reader.get_grid(args.stage_file)
     original_tiles = copy.deepcopy(tiles)
     gamestate = state.initialize_gamestate(tiles)
@@ -70,5 +72,5 @@ def reset_game(gamestate, tiles, original_tiles):
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
-    
+
 main()
