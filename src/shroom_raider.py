@@ -23,7 +23,7 @@ def main():
     initializes game state, and enters the main game loop. If no stage file argument, 
     then a default stage file is used.
 
-    If moves and output_file are present then run_automated_testing is used, where it
+    If moves and output_file are present, run_automated_testing is executed which
     processes all moves then outputs the final state and grid to the output file.
     """
 
