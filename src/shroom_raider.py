@@ -9,7 +9,7 @@ Handles:
 - Automated testing through output files
 """
 import os
-import stagefile_reader
+from grid_layouts import stagefile_reader
 import mechanics
 import display
 import state
