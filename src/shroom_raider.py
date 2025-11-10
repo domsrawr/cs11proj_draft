@@ -8,10 +8,11 @@ Handles:
 - Stage resets
 - Automated testing through output files
 """
+
 import os
 from grid_layouts import stagefile_reader
 import mechanics
-import display
+from display import display
 import state
 import copy
 from argparse import ArgumentParser
