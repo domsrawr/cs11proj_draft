@@ -20,7 +20,10 @@ ascii_to_emoji = {
     '*': ":fire:"
 }
 
-def convert_to_emoji(grid):
+
+def convert_to_emoji(
+        grid: list[list[str]]
+) -> None:
     """Convert and print the forest grid as emojis to the console.
     
     Args:
@@ -31,6 +34,7 @@ def convert_to_emoji(grid):
             (emoji.emojize(ascii_to_emoji.get(char, char), language='alias') + ' ') if char == 'R'
             else emoji.emojize(ascii_to_emoji.get(char, char), language='alias') for char in row)
         print(map)
+
 
 def display_movement_instructions():
     """Displays movement and action controls"""
@@ -45,7 +49,10 @@ def display_movement_instructions():
 What's your move?
     ''')
 
-def tile_item(gamestate):
+
+def tile_item(
+        gamestate: dict
+) -> None:
     """Display what item (if any) is available on Larry's current tile.
     
     Args:
@@ -56,8 +63,11 @@ def tile_item(gamestate):
         print(f'The tile contains {"an" if tile_item[0].lower() in "aeiou" else "a"} {tile_item}!')
     else:
         print(f'There is no item at the tile.')
-    
-def display_mushroom_count(gamestate):
+
+
+def display_mushroom_count(
+        gamestate: dict
+) -> None:
     """Display how many out of the max number of mushrooms have been collected.
     
     Args:
@@ -65,7 +75,10 @@ def display_mushroom_count(gamestate):
     """
     print(f'\n{gamestate['mushroom_count']}/{gamestate['max_mushroom_count']} mushroom collected!')
 
-def display_item_holding(gamestate):
+
+def display_item_holding(
+        gamestate: dict
+) -> None:
     """Display what item (if any) Larry is currently holding.
     
     Args:
@@ -77,13 +90,15 @@ def display_item_holding(gamestate):
     else:
         print(f'You are not holding anything.')
 
+
 def win():
     """Display victory screen."""
     print('''
 You won!
 Input '!' to play again!
     ''')
-    
+
+
 def lose():
     """Display game over screen."""
     print('''

@@ -10,15 +10,14 @@ Handles:
 """
 
 import os
-from grid_layouts import stagefile_reader
-import mechanics
-from display import display
-import state
 import copy
+from grid_layouts import stagefile_reader
+from src import state, mechanics
+from display import display
 from argparse import ArgumentParser
 
-def main():
-    """Initialize and run the game.
+def main() -> None:
+    """Initialize and run shroom raider game.
     
     Parses command-line arguments to get the stage file, loads the forest grid,
     initializes game state, and enters the main game loop. If no stage file argument, 
@@ -38,7 +37,7 @@ def main():
     stage_file = args.file_arg if args.file_arg else args.stage_file
     
     if not stage_file:
-        stage_file = 'default_stage.txt'
+        stage_file = 'src/default_stage.txt'
 
     grid = stagefile_reader.get_grid(stage_file)
     original_grid = copy.deepcopy(grid)
@@ -50,7 +49,13 @@ def main():
         run_live_gameplay(gamestate, grid, original_grid)
 
 
-def run_automated_testing(moves, gamestate, grid, original_grid, output_file):
+def run_automated_testing(
+        moves: str,
+        gamestate: dict,
+        grid: list[list[str]],
+        original_grid: list[list[str]],
+        output_file: str,
+) -> None:
     """Execute a sequence of moves then save results to file.
     
     This mode is used for automated testing. It processes all moves without
@@ -78,7 +83,11 @@ def run_automated_testing(moves, gamestate, grid, original_grid, output_file):
         for row in grid:
             file.write(''.join(row) + '\n')
 
-def run_live_gameplay(gamestate, grid, original_grid):
+def run_live_gameplay(
+        gamestate: dict,
+        grid: list[list[str]],
+        original_grid: list[list[str]],
+) -> None:
     """Run the game in interactive mode with display and user input.
     
     Args:
@@ -112,7 +121,12 @@ def run_live_gameplay(gamestate, grid, original_grid):
                 input_sequence = input()
                 game_over_input(input_sequence, gamestate, grid, original_grid)
 
-def game_over_input(input_sequence, gamestate, grid, original_grid):
+def game_over_input(
+        input_sequence: str,
+        gamestate: dict,
+        grid: list[list[str]],
+        original_grid: list[list[str]],
+) -> None:
     """Process input after the game is over (win or lose).
     
     When the game ends, this function waits for the player to press '!' to
@@ -133,7 +147,12 @@ def game_over_input(input_sequence, gamestate, grid, original_grid):
             reset_game(gamestate, grid, original_grid)
             process_inputs(input_sequence[i:], gamestate, grid, original_grid)
 
-def process_inputs(input_sequence, gamestate, grid, original_grid):
+def process_inputs(
+        input_sequence: str,
+        gamestate: dict,
+        grid: list[list[str]],
+        original_grid: list[list[str]],
+) -> None:
     """Process a sequence of input commands.
     
     Handles multiple commands in a single input string:
@@ -170,7 +189,11 @@ def process_inputs(input_sequence, gamestate, grid, original_grid):
         else:
             break
         
-def reset_game(gamestate, grid, original_grid):
+def reset_game(
+        gamestate: dict,
+        grid: list[list[str]],
+        original_grid: list[list[str]],
+) -> None:
     """Reset the current stage to its initial state.
     
     Restores the forest grid to its original configuration and reinitializes
@@ -188,7 +211,7 @@ def reset_game(gamestate, grid, original_grid):
     grid[:] = copy.deepcopy(original_grid)
     state.reset(gamestate, grid)
 
-def clear():
+def clear() -> None:
     """Clear the console screen.
     
     Uses the appropriate system command based on the operating system:
@@ -196,6 +219,11 @@ def clear():
     - Unix/Linux/Mac: 'clear'
     """
     os.system('cls' if os.name == 'nt' else 'clear')
-    
-if __name__ == '__main__':
-    main()
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n")
+        print("Exiting shroom raider... (Keyboard Interrupt detected)")
+        print("\n")
