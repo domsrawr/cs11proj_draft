@@ -298,6 +298,8 @@ def pick_up(gamestate):
     
     If there's an item on the current tile, Larry picks it up and the item
     is removed from the tile and from the item coordinate tracking set.
+    Larry must not be holding an item for him to pick up at the item at the
+    current tile.
 
     If Larry tries to pick up an item when there's no item on the tile,
     nothing happens.
@@ -310,7 +312,7 @@ def pick_up(gamestate):
         - Clears tile_item
         - Removes the item coordinates from the set that tracks it
     """
-    if gamestate['tile_item']:
+    if gamestate['tile_item'] and not gamestate['item_holding']:
         gamestate['item_holding'] = gamestate['tile_item']
         gamestate['tile_item'] = None
         gamestate[f"{gamestate['item_holding']}_tiles"].remove((gamestate['larry_row'], gamestate['larry_column']))
