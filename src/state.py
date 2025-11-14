@@ -52,15 +52,14 @@ def initialize_gamestate(
     'larry_column': 0,
     }
 
-    larry_finder(gamestate, grid)
-    mushroom_counter(gamestate, grid)
-    axe_finder(gamestate, grid)
-    flamethrower_finder(gamestate, grid)
+    gamestate['larry_row'], gamestate['larry_column'] = larry_finder(gamestate, grid)
+    gamestate['mushroom_count'] = mushroom_counter(gamestate, grid)
+    gamestate['axe_tiles'] = axe_finder(gamestate, grid)
+    gamestate['flamethrower_tiles'] = flamethrower_finder(gamestate, grid)
 
     return gamestate
 
 def reset(
-        gamestate: dict,
         grid: list[list[str]],
 ) -> None:
     """Reset the gamestate dictionary to its original values.
@@ -69,12 +68,11 @@ def reset(
     Used when user inputs '!' to reset the level.
 
     Args: 
-        gamestate (dict): The current gamestate
         grid (list[list[str]]): Original grid (before any moves were made)
     """
     new_state = initialize_gamestate(grid)
-    gamestate.clear()
-    gamestate.update(new_state)
+
+    return new_state
 
 def larry_finder(
         gamestate: dict,
@@ -93,8 +91,7 @@ def larry_finder(
         if 'L' in grid[row_number]:
             for column_number in range(len(grid[row_number])):
                 if grid[row_number][column_number] == 'L':
-                    gamestate['larry_row'] = row_number
-                    gamestate['larry_column'] = column_number
+                    return (row_number, column_number)
 
 def mushroom_counter(
         gamestate: dict,
@@ -109,11 +106,13 @@ def mushroom_counter(
         gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
     """
+    mushroom_count = 0
     for row_number in range(len(grid)):
         if '+' in grid[row_number]:
             for column_number in range(len(grid[row_number])):
                 if grid[row_number][column_number] == '+':
-                    gamestate['max_mushroom_count'] += 1
+                    mushroom_count += 1
+    return mushroom_count
 
 def axe_finder(
         gamestate: dict,
@@ -128,11 +127,13 @@ def axe_finder(
         gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
     """
+    axe_tiles = set()
     for row_number in range(len(grid)):
         if 'x' in grid[row_number]:
             for column_number in range(len(grid[row_number])):
                 if grid[row_number][column_number] == 'x':
-                    gamestate['axe_tiles'].add((row_number, column_number))
+                    axe_tiles.add((row_number, column_number))
+    return axe_tiles
 
 def flamethrower_finder(
         gamestate: dict,
@@ -147,8 +148,10 @@ def flamethrower_finder(
         gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
     """
+    flamethrower_tiles = set()
     for row_number in range(len(tiles)):
         if '*' in tiles[row_number]:
             for column_number in range(len(tiles[row_number])):
                 if tiles[row_number][column_number] == '*':
-                    gamestate['flamethrower_tiles'].add((row_number, column_number))
+                    flamethrower_tiles.add((row_number, column_number))
+    return flamethrower_tiles
