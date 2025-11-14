@@ -11,7 +11,7 @@ Handles:
 
 import os
 import copy
-from grid_layouts import stagefile_reader
+from setup.grid_reader import stagefile_reader
 from src import state, mechanics
 from display import display
 from argparse import ArgumentParser
