@@ -189,11 +189,7 @@ def process_inputs(
         else:
             break
         
-def reset_game(
-        gamestate: dict,
-        grid: list[list[str]],
-        original_grid: list[list[str]],
-) -> None:
+def reset_game(gamestate, grid, original_grid):
     """Reset the current stage to its initial state.
     
     Restores the forest grid to its original configuration and reinitializes
@@ -209,7 +205,9 @@ def reset_game(
         - Resets all gamestate values to initial state
     """
     grid[:] = copy.deepcopy(original_grid)
-    state.reset(gamestate, grid)
+    new_state = state.reset(grid)
+    gamestate.clear()
+    gamestate.update(new_state)
 
 def clear() -> None:
     """Clear the console screen.
