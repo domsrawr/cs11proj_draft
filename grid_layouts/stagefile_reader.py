@@ -4,7 +4,9 @@ This module handles the convertion of stage files into usable and
 mutable lists.
 """
 
-def get_grid(file):
+def get_grid(
+        file: str,
+) -> list[list[str]]:
     """Load and parse a stage file into a 2D grid.
     
     This is the main entry point for loading stage files. 
@@ -21,7 +23,9 @@ def get_grid(file):
     """
     return extract_grid_from_file(read_file(file))
 
-def extract_grid_from_file(unformatted_stagefile):
+def extract_grid_from_file(
+        unformatted_stagefile: str
+) -> list[list[str]]:
     """Parse raw stage file content into a 2D character grid.
     
     The stage file format has dimensions on the first line, followed by
@@ -41,7 +45,9 @@ def extract_grid_from_file(unformatted_stagefile):
     grid = list(list(row) for row in given_grid)
     return grid
 
-def read_file(filename):
+def read_file(
+        filename: str
+) -> str:
     """Read the contents of a file as a string.
     
     Opens and reads the entire file using UTF-8 encoding.

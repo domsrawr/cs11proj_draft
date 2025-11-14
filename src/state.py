@@ -10,7 +10,9 @@ The gamestate dictionary is mutable and is passed to functions throughout the
 game to track changes.
 """
 
-def initialize_gamestate(grid):
+def initialize_gamestate(
+        grid: list[list[str]]
+) -> dict:
     """Initialize and return a gamestate dictionary based on the forest's tiles.
 
     Args:
@@ -57,7 +59,10 @@ def initialize_gamestate(grid):
 
     return gamestate
 
-def reset(gamestate, grid):
+def reset(
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Reset the gamestate dictionary to its original values.
 
     Clears all gamestate data and reinitializes it using original game grid.
@@ -71,7 +76,10 @@ def reset(gamestate, grid):
     gamestate.clear()
     gamestate.update(new_state)
 
-def larry_finder(gamestate, grid):
+def larry_finder(
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Find Larry's initial position.
 
     Searches the grid for the 'L' character and updates the gamestate
@@ -88,7 +96,10 @@ def larry_finder(gamestate, grid):
                     gamestate['larry_row'] = row_number
                     gamestate['larry_column'] = column_number
 
-def mushroom_counter(gamestate, grid):
+def mushroom_counter(
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Count the total amount of mushrooms in the forest.
 
     Searches the grid for the '+' character and updates the gamestate
@@ -104,7 +115,10 @@ def mushroom_counter(gamestate, grid):
                 if grid[row_number][column_number] == '+':
                     gamestate['max_mushroom_count'] += 1
 
-def axe_finder(gamestate, grid):
+def axe_finder(
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Find and store the coordinates of all tiles with an axe.
 
     Searches the grid for the 'x' character and adds the coordinate to
@@ -120,7 +134,10 @@ def axe_finder(gamestate, grid):
                 if grid[row_number][column_number] == 'x':
                     gamestate['axe_tiles'].add((row_number, column_number))
 
-def flamethrower_finder(gamestate, tiles):
+def flamethrower_finder(
+        gamestate: dict,
+        tiles: list[list[str]],
+) -> None:
     """Find and store the coordinates of all tiles with a flamethrower.
 
     Searches the grid for the '*' character and adds the coordinate to
