@@ -16,6 +16,7 @@ def initialize_gamestate(
             - item_holding (str|None): Item Larry is currently holding ('axe', 'flamethrower', or None)
             - tile_item (str|None): Item available on Larry's current tile
             - paved_tiles (set): Coordinates of paved tiles
+            - rock_tiles (set): Coordinates of rock tiles for unit testing
             - axe_tiles (set): Coordinates of all axe locations
             - flamethrower_tiles (set): Coordinates of all flamethrower locations
             - larry_row (int): Larry's current row position
@@ -29,7 +30,7 @@ def initialize_gamestate(
                  'tile_item': None,
                  }
     
-    larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles = tile_finder(grid)
+    larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles, rock_tiles = tile_finder(grid)
 
     gamestate = gamestate | {
         'larry_row': larry_row,
@@ -38,6 +39,7 @@ def initialize_gamestate(
         'axe_tiles': axe_tiles,
         'flamethrower_tiles': flamethrower_tiles,
         'paved_tiles': paved_tiles,
+        'rock_tiles': rock_tiles,
     }
 
     return gamestate
@@ -80,6 +82,7 @@ def tile_finder(
     axe_tiles = set()
     flamethrower_tiles = set()
     paved_tiles = set()
+    rock_tiles = set()
 
     for row_number in range(len(grid)):
         if any(item in '+Lx*_' for item in grid[row_number]):
@@ -89,6 +92,8 @@ def tile_finder(
                 elif grid[row_number][column_number] == 'L':
                     larry_row = row_number
                     larry_column = column_number
+                elif grid[row_number][column_number] == 'R':
+                    rock_tiles.add((row_number, column_number))
                 elif grid[row_number][column_number] == 'x':
                     axe_tiles.add((row_number, column_number))
                 elif grid[row_number][column_number] == '*':
@@ -96,4 +101,4 @@ def tile_finder(
                 elif grid[row_number][column_number] == '_':
                     paved_tiles.add((row_number, column_number))
 
-    return larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles
+    return larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles, rock_tiles
