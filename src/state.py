@@ -21,29 +21,24 @@ def initialize_gamestate(
             - larry_row (int): Larry's current row position
             - larry_column (int): Larry's current column position
     """
-    gamestate = {
-    'run_game': True,
-    'win': False,
-    'lost': False,
+    gamestate = {'run_game': True,
+                 'win': False,
+                 'lost': False,
+                 'mushroom_count': 0,
+                 'max_mushroom_count': 0,
+                 'item_holding': None,
+                 'tile_item': None,
+                 'paved_tiles': set(),
+                 'axe_tiles': set(),
+                 'flamethrower_tiles': set(),}
 
-    'mushroom_count': 0,
-    'max_mushroom_count': 0,
-
-    'item_holding': None,
-    'tile_item': None,
-
-    'paved_tiles': set(),
-    'axe_tiles': set(),
-    'flamethrower_tiles': set(),
-
-    'larry_row': 0,
-    'larry_column': 0,
+    gamestate = gamestate | {
+        'larry_row': (larry_finder(0, grid))[0],
+        'larry_column': (larry_finder(0, grid))[1],
+        'max_mushroom_count': mushroom_counter(gamestate, grid),
+        'axe_tiles': axe_finder(gamestate, grid),
+        'flamethrower_tiles': flamethrower_finder(gamestate, grid)
     }
-
-    gamestate['larry_row'], gamestate['larry_column'] = larry_finder(gamestate, grid)
-    gamestate['max_mushroom_count'] = mushroom_counter(gamestate, grid)
-    gamestate['axe_tiles'] = axe_finder(gamestate, grid)
-    gamestate['flamethrower_tiles'] = flamethrower_finder(gamestate, grid)
 
     return gamestate
 
