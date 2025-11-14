@@ -62,7 +62,7 @@ def reset(
 
 def tile_finder(
         grid: list[list[str]],
-) -> tup:
+) -> tuple:
     """Track all the important tiles in the grid.
 
     Searches the grid for specific tiles and returns their
