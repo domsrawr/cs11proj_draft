@@ -1,9 +1,3 @@
-"""Stage file reader module for reading and parsing stage file.
-
-This module handles the convertion of stage files into usable and
-mutable lists.
-"""
-
 def get_grid(
         file: str,
 ) -> list[list[str]]:
