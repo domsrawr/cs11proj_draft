@@ -1,5 +1,5 @@
 import pytest
-import setup.grid_reader.stagefile_reader as stagefile_reader
+import setup.stagefile_reader as stagefile_reader
 
 def test_extract_grid_from_file_basic():
     sample_content = "3 3\nSYS\nTEM\nERR"

@@ -11,7 +11,7 @@ Handles:
 
 import os
 import copy
-from setup.grid_reader import stagefile_reader
+from setup import stagefile_reader
 from src import state, mechanics, game_constants
 from display import display
 from argparse import ArgumentParser
