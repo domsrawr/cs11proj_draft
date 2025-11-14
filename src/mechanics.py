@@ -1,12 +1,3 @@
-"""Mechanics module for handling all game mechanics.
-
-This module handles all player movement, tile interactions, and game mechanics including:
-- Moving Larry in four directions (WASD)
-- Interacting with different tile types (trees, rocks, water, mushrooms, items)
-- Item pickup and usage (axes, flamethrowers)
-"""
-
-
 # Map movement keys to row and column offsets
 movement_dict = {
     'W': (-1, 0),

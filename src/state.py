@@ -1,15 +1,3 @@
-"""State module for initializing and resetting the game state.
-
-This module handles initialization and management of the game state dictionary,
-which tracks Larry's position, mushroom counts, held items, and win/lose status.
-
-All functions in this module are only called when the game starts or when the
-game is reset.
-
-The gamestate dictionary is mutable and is passed to functions throughout the
-game to track changes.
-"""
-
 def initialize_gamestate(
         grid: list[list[str]]
 ) -> dict:
