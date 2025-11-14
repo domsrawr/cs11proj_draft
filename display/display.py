@@ -1,11 +1,3 @@
-"""Display module for handling all console outputs.
-
-This module is in charge of:
-- Rendering the forest grid
-- Displaying game instructions
-- Showing player status (items, mushrooms)
-- Win/lose screens
-"""
 import emoji
 
 ascii_to_emoji = {
