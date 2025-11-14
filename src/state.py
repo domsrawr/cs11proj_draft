@@ -53,7 +53,7 @@ def initialize_gamestate(
     }
 
     gamestate['larry_row'], gamestate['larry_column'] = larry_finder(gamestate, grid)
-    gamestate['mushroom_count'] = mushroom_counter(gamestate, grid)
+    gamestate['max_mushroom_count'] = mushroom_counter(gamestate, grid)
     gamestate['axe_tiles'] = axe_finder(gamestate, grid)
     gamestate['flamethrower_tiles'] = flamethrower_finder(gamestate, grid)
 
