@@ -12,10 +12,9 @@ Handles:
 import os
 import copy
 from setup.grid_reader import stagefile_reader
-from src import state, mechanics
+from src import state, mechanics, game_constants
 from display import display
 from argparse import ArgumentParser
-
 def main() -> None:
     """Initialize and run shroom raider game.
     
@@ -98,26 +97,26 @@ def run_live_gameplay(
     while True:
         while gamestate['run_game']:
             clear()
-            display.convert_to_emoji(grid)
-            display.display_mushroom_count(gamestate)
-            display.display_item_holding(gamestate)
-            display.tile_item(gamestate)
-            display.display_movement_instructions()
+            print(display.convert_to_emoji(grid))
+            print(display.display_mushroom_count(gamestate))
+            print(display.display_item_holding(gamestate))
+            print(display.tile_item(gamestate))
+            print(game_constants.MOVEMENT_INSTRUCTIONS)
             input_sequence = input() 
             process_inputs(input_sequence, gamestate, grid, original_grid)
         else:
             if gamestate['win']:
                 clear()
-                display.convert_to_emoji(grid)
-                display.display_mushroom_count(gamestate)
-                display.win()
+                print(display.convert_to_emoji(grid))
+                print(display.display_mushroom_count(gamestate))
+                print(game_constants.WIN_MESSAGE)
                 input_sequence = input()
                 game_over_input(input_sequence, gamestate, grid, original_grid)
             elif gamestate['lost']:
                 clear()
-                display.convert_to_emoji(grid)
-                display.display_mushroom_count(gamestate)
-                display.lose()
+                print(display.convert_to_emoji(grid))
+                print(display.display_mushroom_count(gamestate))
+                print(game_constants.LOSE_MESSAGE)
                 input_sequence = input()
                 game_over_input(input_sequence, gamestate, grid, original_grid)
 

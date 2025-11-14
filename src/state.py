@@ -33,11 +33,11 @@ def initialize_gamestate(
                  'flamethrower_tiles': set(),}
 
     gamestate = gamestate | {
-        'larry_row': (larry_finder(0, grid))[0],
-        'larry_column': (larry_finder(0, grid))[1],
-        'max_mushroom_count': mushroom_counter(gamestate, grid),
-        'axe_tiles': axe_finder(gamestate, grid),
-        'flamethrower_tiles': flamethrower_finder(gamestate, grid)
+        'larry_row': (larry_finder(grid))[0],
+        'larry_column': (larry_finder(grid))[1],
+        'max_mushroom_count': mushroom_counter(grid),
+        'axe_tiles': axe_finder(grid),
+        'flamethrower_tiles': flamethrower_finder(grid)
     }
 
     return gamestate
