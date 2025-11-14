@@ -1,5 +1,4 @@
 from emoji import emojize
-import emoji
 
 letter_correspondence = {
     'T': ":evergreen_tree:",
@@ -10,10 +9,9 @@ letter_correspondence = {
     '~': ":blue_square:",
     '_': ":white_large_square:",
     'x': ":axe:",
-    '*': ":fire:"
+    '*': ":fire:",
 }
-
-
+ascii_to_emoji = {k: {"correspondence": v, "emoji": emojize(v)} for k, v in letter_correspondence.items()}
 
 def convert_to_emoji(
         grid: list[list[str]]
@@ -27,12 +25,11 @@ def convert_to_emoji(
     for row in grid:
         for char in row:
             if char == 'R':
-                map.append(emoji.emojize(ascii_to_emoji.get(char, char), language='alias') + ' ')
+                map.append(ascii_to_emoji[char]["emoji"] + " ")
             else:
-                map.append(emoji.emojize(ascii_to_emoji.get(char, char), language='alias'))
+                map.append(ascii_to_emoji[char]["emoji"])
         map.append("\n")
     return "".join(map)
-
 
 def tile_item(
         gamestate: dict
