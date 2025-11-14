@@ -28,14 +28,16 @@ def initialize_gamestate(
                  'item_holding': None,
                  'tile_item': None,
                  }
+    
+    larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles = tile_finder(grid)
 
     gamestate = gamestate | {
-        'larry_row': (larry_finder(grid))[0],
-        'larry_column': (larry_finder(grid))[1],
-        'max_mushroom_count': mushroom_counter(grid),
-        'axe_tiles': axe_finder(grid),
-        'flamethrower_tiles': flamethrower_finder(grid),
-        'paved_tiles': paved_finder(grid),
+        'larry_row': larry_row,
+        'larry_column': larry_column,
+        'max_mushroom_count': mushroom_count,
+        'axe_tiles': axe_tiles,
+        'flamethrower_tiles': flamethrower_tiles,
+        'paved_tiles': paved_tiles,
     }
 
     return gamestate
@@ -58,110 +60,40 @@ def reset(
 
     return new_state
 
-def larry_finder(
+def tile_finder(
         grid: list[list[str]],
-) -> tuple:
-    """Find Larry's initial position.
+) -> tup:
+    """Track all the important tiles in the grid.
 
-    Searches the grid for the 'L' character and returns
-    Larry's row and column.
+    Searches the grid for specific tiles and returns their
+    count or coordinate.
 
     Args:
         grid (list[list[str]]): The forest's 2D grid
 
     Returns:
-        tuple: A tuple containing Larry's row and column.
+        tup: A tuple of all the tiles' coordinates/counts. 
     """
-    for row_number in range(len(grid)):
-        if 'L' in grid[row_number]:
-            for column_number in range(len(grid[row_number])):
-                if grid[row_number][column_number] == 'L':
-                    return (row_number, column_number)
-
-def mushroom_counter(
-        grid: list[list[str]],
-) -> int:
-    """Count the total amount of mushrooms in the forest.
-
-    Searches the grid for the '+' character and returns
-    the total amount of mushrooms.
-
-    Args:
-        grid (list[list[str]]): The forest's 2D grid
-
-    Returns:
-        int: Total number of mushrooms in the grid
-    """
+    larry_row = 0
+    larry_column = 0
     mushroom_count = 0
+    axe_tiles = set()
+    flamethrower_tiles = set()
+    paved_tiles = set()
+
     for row_number in range(len(grid)):
-        if '+' in grid[row_number]:
+        if any(item in '+Lx*_' for item in grid[row_number]):
             for column_number in range(len(grid[row_number])):
                 if grid[row_number][column_number] == '+':
                     mushroom_count += 1
-    return mushroom_count
-
-def axe_finder(
-        grid: list[list[str]],
-) -> set:
-    """Find and store the coordinates of all tiles with an axe.
-
-    Searches the grid for the 'x' character and returns all coordinates
-    with the character.
-
-    Args:
-        grid (list[list[str]]): The forest's 2D grid
-
-    Returns:
-        set: All tiles with an axe.
-    """
-    axe_tiles = set()
-    for row_number in range(len(grid)):
-        if 'x' in grid[row_number]:
-            for column_number in range(len(grid[row_number])):
-                if grid[row_number][column_number] == 'x':
+                elif grid[row_number][column_number] == 'L':
+                    larry_row = row_number
+                    larry_column = column_number
+                elif grid[row_number][column_number] == 'x':
                     axe_tiles.add((row_number, column_number))
-    return axe_tiles
-
-def flamethrower_finder(
-        tiles: list[list[str]],
-) -> set:
-    """Find and store the coordinates of all tiles with a flamethrower.
-
-    Searches the grid for the '*' character and returns all coordinates
-    with the character.
-
-    Args:
-        grid (list[list[str]]): The forest's 2D grid
-
-    Returns:
-        set: All tiles with a flamethrower.
-    """
-    flamethrower_tiles = set()
-    for row_number in range(len(tiles)):
-        if '*' in tiles[row_number]:
-            for column_number in range(len(tiles[row_number])):
-                if tiles[row_number][column_number] == '*':
+                elif grid[row_number][column_number] == '*':
                     flamethrower_tiles.add((row_number, column_number))
-    return flamethrower_tiles
-
-def flamethrower_finder(
-        tiles: list[list[str]],
-) -> set:
-    """Find and store the coordinates of all tiles with a flamethrower.
-
-    Searches the grid for the '*' character and returns all coordinates
-    with the character.
-
-    Args:
-        grid (list[list[str]]): The forest's 2D grid
-
-    Returns:
-        set: All tiles with a flamethrower.
-    """
-    paved_tiles = set()
-    for row_number in range(len(tiles)):
-        if '_' in tiles[row_number]:
-            for column_number in range(len(tiles[row_number])):
-                if tiles[row_number][column_number] == '_':
+                elif grid[row_number][column_number] == '_':
                     paved_tiles.add((row_number, column_number))
-    return paved_tiles
+
+    return larry_row, larry_column, mushroom_count, axe_tiles, flamethrower_tiles, paved_tiles
