@@ -37,7 +37,7 @@ def main() -> None:
     stage_file = args.file_arg if args.file_arg else args.stage_file
     
     if not stage_file:
-        stage_file = 'grid_layouts/default_stage.txt'
+        stage_file = 'setup/default_stage.txt'
 
     grid = stagefile_reader.get_grid(stage_file)
     original_grid = copy.deepcopy(grid)
