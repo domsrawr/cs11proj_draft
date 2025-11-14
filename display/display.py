@@ -1,5 +1,4 @@
 from emoji import emojize
-import emoji
 
 letter_correspondence = {
     'T': ":evergreen_tree:",
@@ -10,10 +9,9 @@ letter_correspondence = {
     '~': ":blue_square:",
     '_': ":white_large_square:",
     'x': ":axe:",
-    '*': ":fire:"
+    '*': ":fire:",
 }
-
-
+ascii_to_emoji = {k: {"correspondence": v, "emoji": emojize(v)} for k, v in letter_correspondence.items()}
 
 def convert_to_emoji(
         grid: list[list[str]]
@@ -27,12 +25,11 @@ def convert_to_emoji(
     for row in grid:
         for char in row:
             if char == 'R':
-                map.append(emoji.emojize(ascii_to_emoji.get(char, char), language='alias') + ' ')
+                map.append(ascii_to_emoji[char]["emoji"] + " ")
             else:
-                map.append(emoji.emojize(ascii_to_emoji.get(char, char), language='alias'))
+                map.append(ascii_to_emoji[char]["emoji"])
         map.append("\n")
     return "".join(map)
-
 
 def tile_item(
         gamestate: dict
@@ -46,10 +43,12 @@ def tile_item(
         str: What item the tile contains, if any
     """
     tile_item = gamestate['tile_item']
-    if tile_item:
-        return f'The tile contains {"an" if tile_item[0].lower() in "aeiou" else "a"} {tile_item}!'
+    if tile_item == 'axe':
+        return f'Tile contains: {emojize(':axe:')}'
+    elif tile_item == 'flamethrower':
+        return f'Tile contains: {emojize(':fire:')}'
     else:
-        return f'There is no item at the tile.'
+        return f'Tile contains:'
 
 
 def display_mushroom_count(
@@ -79,7 +78,9 @@ def display_item_holding(
         str: What item the player is currently holding, if any
     """
     item = gamestate['item_holding']
-    if item:
-        return f'You are holding {"an" if item[0].lower() in "aeiou" else "a"} {item}.'
+    if item == 'axe':
+        return f'Item holding: {emojize(':axe:')}'
+    elif item == 'flamethrower':
+        return f'Item holding: {emojize(':fire:')}'
     else:
-        return f'You are not holding anything.'
+        return f'Item holding:'

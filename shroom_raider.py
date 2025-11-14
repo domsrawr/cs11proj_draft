@@ -94,6 +94,8 @@ def run_live_gameplay(
         grid (list[list[str]]): Current forest grid
         original_grid (list[list[str]]): Original forest grid for reset
     """
+    feedback_message = ''
+
     while True:
         while gamestate['run_game']:
             clear()
@@ -101,9 +103,12 @@ def run_live_gameplay(
             print(display.display_mushroom_count(gamestate))
             print(display.display_item_holding(gamestate))
             print(display.tile_item(gamestate))
+            if feedback_message:
+                print('\n', feedback_message)
+                feedback_message = ''
             print(game_constants.MOVEMENT_INSTRUCTIONS)
             input_sequence = input() 
-            process_inputs(input_sequence, gamestate, grid, original_grid)
+            feedback_message = process_inputs(input_sequence, gamestate, grid, original_grid)
         else:
             if gamestate['win']:
                 clear()
@@ -151,7 +156,7 @@ def process_inputs(
         gamestate: dict,
         grid: list[list[str]],
         original_grid: list[list[str]],
-) -> None:
+) -> str:
     """Process a sequence of input commands.
     
     Handles multiple commands in a single input string:
@@ -168,6 +173,9 @@ def process_inputs(
         gamestate (dict): Current game state
         grid (list[list[str]]): Current forest grid
         original_grid (list[list[str]]): Original forest grid for reset
+
+    Returns:
+        str: If item pick up is not successful, returns reason why
         
     Side Effects:
         - Updates gamestate and tiles based on each command
@@ -175,6 +183,8 @@ def process_inputs(
         - Stops processing if invalid input
     """
     for i in range(len(input_sequence)):
+        reason = ''
+        picked_up = None
         move = input_sequence[i]
         if not gamestate['run_game']:
             game_over_input(input_sequence[i:], gamestate, grid, original_grid)
@@ -182,11 +192,14 @@ def process_inputs(
         if move.upper() in 'WASD':
             mechanics.do_move(move.upper(), gamestate, grid)
         elif move.upper() == 'P':
-            mechanics.pick_up(gamestate)
+            (picked_up, reason) = mechanics.pick_up(gamestate)
         elif move == '!':
             reset_game(gamestate, grid, original_grid)
         else:
             break
+    if not picked_up:
+        return reason
+        
         
 def reset_game(gamestate, grid, original_grid):
     """Reset the current stage to its initial state.

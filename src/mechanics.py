@@ -52,25 +52,9 @@ def do_move(
             trail(gamestate['larry_row'], gamestate['larry_column'], gamestate, grid)
             gamestate['larry_row'] = next_row
             gamestate['larry_column'] = next_column
-            if should_overwrite_tile(gamestate):
+            if not gamestate['lost']:
                 grid[gamestate['larry_row']][gamestate['larry_column']] = tile_symbols['larry']
             
-def should_overwrite_tile(
-        gamestate: dict
-) -> bool:
-    """Determine if Larry's new tile should be overwritten with 'L'.
-    
-    Larry doesn't overwrite the tile when he drowns in water,
-    as the water consumes him visually.
-    
-    Args:
-        gamestate (dict): Current game state
-        
-    Returns:
-        bool: True if tile should be overwritten, False if Larry has lost (drowned)
-    """
-    return not gamestate['lost']
-
 def within_bounds(
         row: int,
         column: int,
@@ -329,7 +313,7 @@ def trail(
     
 def pick_up(
         gamestate: dict
-) -> None:
+) -> tuple:
     """Pick up an item from Larry's current tile.
     
     If there's an item on the current tile, Larry picks it up and the item
@@ -342,6 +326,10 @@ def pick_up(
     
     Args:
         gamestate (dict): Current game state
+
+    Returns:
+        tuple: First item (boolean) represents if item is successfully picked up,
+    second item is the feedback message if Larry failed in picking up an item.
         
     Side Effects:
         - Sets item_holding to the picked up item
@@ -352,6 +340,11 @@ def pick_up(
         gamestate['item_holding'] = gamestate['tile_item']
         gamestate['tile_item'] = None
         gamestate[f"{gamestate['item_holding']}_tiles"].remove((gamestate['larry_row'], gamestate['larry_column']))
+        return (True, None)
+    elif gamestate['item_holding']:
+        return (False, 'You already have an item!')
+    elif not gamestate['tile_item']:
+        return (False, 'No item at the tile!')
 
 def burn_connected_trees(
         origin_row: int,
