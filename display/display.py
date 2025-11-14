@@ -1,6 +1,7 @@
+from emoji import emojize
 import emoji
 
-ascii_to_emoji = {
+letter_correspondence = {
     'T': ":evergreen_tree:",
     '.': "　",
     'L': ":person:",
@@ -11,6 +12,7 @@ ascii_to_emoji = {
     'x': ":axe:",
     '*': ":fire:"
 }
+
 
 
 def convert_to_emoji(
