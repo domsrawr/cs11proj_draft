@@ -52,43 +52,52 @@ What's your move?
 
 def tile_item(
         gamestate: dict
-) -> None:
+) -> str:
     """Display what item (if any) is available on Larry's current tile.
     
     Args:
         gamestate (dict): Current game state
+
+    Returns:
+        str: What item the tile contains, if any
     """
     tile_item = gamestate['tile_item']
     if tile_item:
-        print(f'The tile contains {"an" if tile_item[0].lower() in "aeiou" else "a"} {tile_item}!')
+        return (f'The tile contains {"an" if tile_item[0].lower() in "aeiou" else "a"} {tile_item}!')
     else:
-        print(f'There is no item at the tile.')
+        return (f'There is no item at the tile.')
 
 
 def display_mushroom_count(
         gamestate: dict
-) -> None:
+) -> str:
     """Display how many out of the max number of mushrooms have been collected.
     
     Args:
         gamestate (dict): Current game state
+
+    Returns:
+        str: Amount of mushrooms the player has collected out of total mushrooms in grid.
     """
-    print(f'\n{gamestate['mushroom_count']}/{gamestate['max_mushroom_count']} mushroom collected!')
+    return (f'\n{gamestate['mushroom_count']}/{gamestate['max_mushroom_count']} mushroom collected!')
 
 
 def display_item_holding(
         gamestate: dict
-) -> None:
+) -> str:
     """Display what item (if any) Larry is currently holding.
     
     Args:
         gamestate (dict): Current game state
+
+    Returns:
+        str: What item the player is currently holding, if any
     """
     item = gamestate['item_holding']
     if item:
-        print(f'You are holding {"an" if item[0].lower() in "aeiou" else "a"} {item}.')
+        return (f'You are holding {"an" if item[0].lower() in "aeiou" else "a"} {item}.')
     else:
-        print(f'You are not holding anything.')
+        return (f'You are not holding anything.')
 
 
 def win():
