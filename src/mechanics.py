@@ -27,7 +27,11 @@ tile_symbols = {
     'flamethrower': '*'
 }
                 
-def do_move(direction, gamestate, grid):
+def do_move(
+        direction: str,
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Attempt to move Larry in the specified direction.
     
     Calculates the next position based on direction, checks if the position is within bounds, 
@@ -59,7 +63,9 @@ def do_move(direction, gamestate, grid):
             if should_overwrite_tile(gamestate):
                 grid[gamestate['larry_row']][gamestate['larry_column']] = tile_symbols['larry']
             
-def should_overwrite_tile(gamestate):
+def should_overwrite_tile(
+        gamestate: dict
+) -> bool:
     """Determine if Larry's new tile should be overwritten with 'L'.
     
     Larry doesn't overwrite the tile when he drowns in water,
@@ -73,7 +79,11 @@ def should_overwrite_tile(gamestate):
     """
     return not gamestate['lost']
 
-def within_bounds(row, column, tiles):
+def within_bounds(
+        row: int,
+        column: int,
+        tiles: list[list[str]],
+) -> bool:
     """Check if the given position is within the forest tile boundaries.
     
     Args:
@@ -86,7 +96,14 @@ def within_bounds(row, column, tiles):
     """
     return 0 <= row < len(tiles) and 0 <= column < len(tiles[0])        
 
-def tile_interactions(next_row, next_column, gamestate, grid, row_offset, column_offset):
+def tile_interactions(
+        next_row: int,
+        next_column: int,
+        gamestate: dict,
+        grid: list[list[str]],
+        row_offset: int,
+        column_offset: int,
+) -> bool:
     """Handle interactions with the tile Larry is trying to move to.
     
     Different tiles have different behaviors:
@@ -102,7 +119,8 @@ def tile_interactions(next_row, next_column, gamestate, grid, row_offset, column
         next_column (int): Column of the target tile
         gamestate (dict): Current game state
         grid (list[list[str]]): 2D grid of forest tiles
-        row_offset (int): Vertical movement direction
+        row_offset (int)
+        : Vertical movement direction
         column_offset (int): Horizontal movement direction
         
     Returns:
@@ -132,7 +150,12 @@ def tile_interactions(next_row, next_column, gamestate, grid, row_offset, column
     elif next_tile == tile_symbols['flamethrower']:
         return True
     
-def check_tile_item(next_row, next_column, gamestate, grid):
+def check_tile_item(
+        next_row: int,
+        next_column: int,
+        gamestate: dict,
+        grid: list[list[str]],
+) -> None:
     """Check if there's an item on the tile Larry's going to move to.
     
     Updates gamestate to indicate if an axe or flamethrower is available
@@ -157,7 +180,12 @@ def check_tile_item(next_row, next_column, gamestate, grid):
     }
     gamestate['tile_item'] = item_map.get(next_tile)
 
-def tree_interactions(next_row, next_column, gamestate, grid):
+def tree_interactions(
+        next_row: int,
+        next_column: int,
+        gamestate: dict,
+        grid: list[list[str]],
+) -> bool:
     """Handle interactions with tree tiles.
     
     Larry can only move through trees if he has an item that will allow
@@ -190,7 +218,14 @@ def tree_interactions(next_row, next_column, gamestate, grid):
         gamestate['item_holding'] = None
         return True
     
-def rock_interactions(rock_row, rock_column, gamestate, grid, row_offset, column_offset):
+def rock_interactions(
+        rock_row: int,
+        rock_column: int,
+        gamestate: dict,
+        grid: list[list[str]],
+        row_offset: int,
+        column_offset: int,
+) -> bool:
     """Handle pushing rocks and their interactions with other tiles.
     
     Rocks can be pushed only if the tile where it's going to be pushed is:
@@ -242,7 +277,9 @@ def rock_interactions(rock_row, rock_column, gamestate, grid, row_offset, column
         grid[rock_next_row][rock_next_column] = tile_symbols['rock']
         return True
     
-def mushroom_interactions(gamestate):
+def mushroom_interactions(
+        gamestate: dict
+) -> bool:
     """Handle collecting a mushroom.
     
     Increments the mushroom count and checks for win condition.
@@ -264,7 +301,12 @@ def mushroom_interactions(gamestate):
         gamestate['win'] = True
     return True
 
-def trail(old_row, old_column, gamestate, grid):
+def trail(
+        old_row: int,
+        old_column: int,
+        gamestate: dict,
+        grid: list[list[str]] ,
+) -> None:
     """Update the tile Larry is leaving behind as he moves.
     
     Restores the original tile type after Larry moves away:
@@ -293,7 +335,9 @@ def trail(old_row, old_column, gamestate, grid):
     else:
         grid[old_row][old_column] = '.'
     
-def pick_up(gamestate):
+def pick_up(
+        gamestate: dict
+) -> None:
     """Pick up an item from Larry's current tile.
     
     If there's an item on the current tile, Larry picks it up and the item
@@ -317,7 +361,11 @@ def pick_up(gamestate):
         gamestate['tile_item'] = None
         gamestate[f"{gamestate['item_holding']}_tiles"].remove((gamestate['larry_row'], gamestate['larry_column']))
 
-def burn_connected_trees(origin_row, origin_column, grid):
+def burn_connected_trees(
+        origin_row: int,
+        origin_column: int,
+        grid: list[list[str]],
+) -> None:
     """Burn down all trees connected to the origin tree using flamethrower.
     
     Uses depth-first search (DFS) to find all trees that are connected 

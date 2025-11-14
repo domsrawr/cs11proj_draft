@@ -1,1 +1,2 @@
 # All used imports appear here
+emoji
