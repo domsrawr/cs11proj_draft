@@ -52,23 +52,27 @@ def reset(
 
     Args: 
         grid (list[list[str]]): Original grid (before any moves were made)
+
+    Returns:
+        dict: Contains all the resetted game state values.
     """
     new_state = initialize_gamestate(grid)
 
     return new_state
 
 def larry_finder(
-        gamestate: dict,
         grid: list[list[str]],
 ) -> None:
     """Find Larry's initial position.
 
-    Searches the grid for the 'L' character and updates the gamestate
-    with Larry's row and column.
+    Searches the grid for the 'L' character and returns
+    Larry's row and column.
 
     Args:
-        gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
+
+    Returns:
+        tuple: A tuple containing Larry's row and column.
     """
     for row_number in range(len(grid)):
         if 'L' in grid[row_number]:
@@ -77,17 +81,18 @@ def larry_finder(
                     return (row_number, column_number)
 
 def mushroom_counter(
-        gamestate: dict,
         grid: list[list[str]],
 ) -> None:
     """Count the total amount of mushrooms in the forest.
 
-    Searches the grid for the '+' character and updates the gamestate
-    with the total amount of mushrooms.
+    Searches the grid for the '+' character and returns
+    the total amount of mushrooms.
 
     Args:
-        gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
+
+    Returns:
+        int: Total number of mushrooms in the grid
     """
     mushroom_count = 0
     for row_number in range(len(grid)):
@@ -98,17 +103,18 @@ def mushroom_counter(
     return mushroom_count
 
 def axe_finder(
-        gamestate: dict,
         grid: list[list[str]],
 ) -> None:
     """Find and store the coordinates of all tiles with an axe.
 
-    Searches the grid for the 'x' character and adds the coordinate to
-    the axe_tiles gamestate. 
+    Searches the grid for the 'x' character and returns all coordinates
+    with the character.
 
     Args:
-        gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
+
+    Returns:
+        set: All tiles with an axe.
     """
     axe_tiles = set()
     for row_number in range(len(grid)):
@@ -119,17 +125,18 @@ def axe_finder(
     return axe_tiles
 
 def flamethrower_finder(
-        gamestate: dict,
         tiles: list[list[str]],
 ) -> None:
     """Find and store the coordinates of all tiles with a flamethrower.
 
-    Searches the grid for the '*' character and adds the coordinate to
-    the flamethrower_tiles gamestate. 
+    Searches the grid for the '*' character and returns all coordinates
+    with the character.
 
     Args:
-        gamestate (dict): The current gamestate
         grid (list[list[str]]): The forest's 2D grid
+
+    Returns:
+        set: All tiles with a flamethrower.
     """
     flamethrower_tiles = set()
     for row_number in range(len(tiles)):
