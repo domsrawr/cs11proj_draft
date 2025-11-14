@@ -25,19 +25,17 @@ def initialize_gamestate(
                  'win': False,
                  'lost': False,
                  'mushroom_count': 0,
-                 'max_mushroom_count': 0,
                  'item_holding': None,
                  'tile_item': None,
-                 'paved_tiles': set(),
-                 'axe_tiles': set(),
-                 'flamethrower_tiles': set(),}
+                 }
 
     gamestate = gamestate | {
         'larry_row': (larry_finder(grid))[0],
         'larry_column': (larry_finder(grid))[1],
         'max_mushroom_count': mushroom_counter(grid),
         'axe_tiles': axe_finder(grid),
-        'flamethrower_tiles': flamethrower_finder(grid)
+        'flamethrower_tiles': flamethrower_finder(grid),
+        'paved_tiles': paved_finder(grid),
     }
 
     return gamestate
@@ -145,3 +143,25 @@ def flamethrower_finder(
                 if tiles[row_number][column_number] == '*':
                     flamethrower_tiles.add((row_number, column_number))
     return flamethrower_tiles
+
+def flamethrower_finder(
+        tiles: list[list[str]],
+) -> set:
+    """Find and store the coordinates of all tiles with a flamethrower.
+
+    Searches the grid for the '*' character and returns all coordinates
+    with the character.
+
+    Args:
+        grid (list[list[str]]): The forest's 2D grid
+
+    Returns:
+        set: All tiles with a flamethrower.
+    """
+    paved_tiles = set()
+    for row_number in range(len(tiles)):
+        if '_' in tiles[row_number]:
+            for column_number in range(len(tiles[row_number])):
+                if tiles[row_number][column_number] == '_':
+                    paved_tiles.add((row_number, column_number))
+    return paved_tiles
