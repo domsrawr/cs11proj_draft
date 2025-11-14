@@ -1,2 +1,3 @@
 # All used imports appear here
-emoji
+emoji~=2.15.0
+pytest~=9.0.0

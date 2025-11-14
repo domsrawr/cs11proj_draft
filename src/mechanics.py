@@ -6,6 +6,7 @@ This module handles all player movement, tile interactions, and game mechanics i
 - Item pickup and usage (axes, flamethrowers)
 """
 
+
 # Map movement keys to row and column offsets
 movement_dict = {
     'W': (-1, 0),
