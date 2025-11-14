@@ -44,7 +44,7 @@ def initialize_gamestate(
 
 def reset(
         grid: list[list[str]],
-) -> None:
+) -> dict:
     """Reset the gamestate dictionary to its original values.
 
     Clears all gamestate data and reinitializes it using original game grid.
@@ -62,7 +62,7 @@ def reset(
 
 def larry_finder(
         grid: list[list[str]],
-) -> None:
+) -> tuple:
     """Find Larry's initial position.
 
     Searches the grid for the 'L' character and returns
@@ -82,7 +82,7 @@ def larry_finder(
 
 def mushroom_counter(
         grid: list[list[str]],
-) -> None:
+) -> int:
     """Count the total amount of mushrooms in the forest.
 
     Searches the grid for the '+' character and returns
@@ -104,7 +104,7 @@ def mushroom_counter(
 
 def axe_finder(
         grid: list[list[str]],
-) -> None:
+) -> set:
     """Find and store the coordinates of all tiles with an axe.
 
     Searches the grid for the 'x' character and returns all coordinates
@@ -126,7 +126,7 @@ def axe_finder(
 
 def flamethrower_finder(
         tiles: list[list[str]],
-) -> None:
+) -> set:
     """Find and store the coordinates of all tiles with a flamethrower.
 
     Searches the grid for the '*' character and returns all coordinates
